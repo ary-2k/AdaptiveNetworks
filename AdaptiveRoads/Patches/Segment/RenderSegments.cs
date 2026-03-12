@@ -55,7 +55,7 @@ namespace AdaptiveRoads.Patches.Segment {
             CodeInstruction LDLoc_SegmentInfo = CheckSegmentFlagsCommons.GetPrevLdLocSegmentInfo(method, codes, index);
             CodeInstruction LDLoca_turnAround = new CodeInstruction(codes[index - 1]);
             Assertion.Assert(LDLoca_turnAround.opcode == OpCodes.Ldloca_S);
-            CodeInstruction LDArg_SegmenteID = TranspilerUtils.GetLDArg(method, "segmentID");
+            CodeInstruction LDArg_SegmenteID = new CodeInstruction(codes[matcher.MatchStartBackwards(new CodeMatch(OpCodes.Ldfld, "segment")).Pos]);
             { // insert our checkflags after base checkflags
                 var newInstructions = new[]{
                     LDLoc_SegmentInfo,
