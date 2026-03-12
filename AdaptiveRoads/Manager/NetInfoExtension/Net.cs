@@ -838,7 +838,7 @@ namespace AdaptiveRoads.Manager {
             }
 
             DynamicFlags<NetInfo> GetNodeCustomConnectGroups(NetInfo netInfo) {
-                DynamicFlags<NetInfo> ret = DynamicFlagsUtil.NONE;
+                DynamicFlags<NetInfo> ret = DynamicFlags<NetInfo>.empty;
                 foreach(var node in netInfo.m_nodes) {
                     if(node.GetMetaData() is Node nodeMetaData)
                         ret = ret | nodeMetaData.CustomConnectGroups.Flags;

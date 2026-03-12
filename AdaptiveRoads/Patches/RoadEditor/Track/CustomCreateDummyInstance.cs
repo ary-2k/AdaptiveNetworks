@@ -23,8 +23,8 @@ namespace AdaptiveRoads.Patches.RoadEditor.Track {
             if(obj is NetInfo.Node node) {
                 node.m_tagsRequired = DynamicFlagsUtil.EMPTY_TAGS;
                 node.m_tagsForbidden = DynamicFlagsUtil.EMPTY_TAGS;
-                node.m_nodeTagsRequired = DynamicFlagsUtil.NONE;
-                node.m_nodeTagsForbidden = DynamicFlagsUtil.NONE;
+                node.m_nodeTagsRequired = DynamicFlags<NetInfo>.empty;
+                node.m_nodeTagsForbidden = DynamicFlags<NetInfo>.empty;
             }
         }
     }

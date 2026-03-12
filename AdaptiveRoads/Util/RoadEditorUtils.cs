@@ -766,8 +766,8 @@ internal static class RoadEditorUtils {
                 m_lodMaterial = new Material(shader),
                 m_tagsRequired = DynamicFlagsUtil.EMPTY_TAGS,
                 m_tagsForbidden = DynamicFlagsUtil.EMPTY_TAGS,
-                m_nodeTagsRequired = DynamicFlagsUtil.NONE,
-                m_nodeTagsForbidden = DynamicFlagsUtil.NONE,
+                m_nodeTagsRequired = DynamicFlags<NetInfo>.empty,
+                m_nodeTagsForbidden = DynamicFlags<NetInfo>.empty,
         };
         }
         return null;

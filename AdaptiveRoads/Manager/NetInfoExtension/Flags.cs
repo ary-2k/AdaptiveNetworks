@@ -132,7 +132,7 @@ namespace AdaptiveRoads.Manager {
         [Serializable]
         public struct TagsInfo {
             private static string[] EMPTY => DynamicFlagsUtil.EMPTY_TAGS;
-            private static DynamicFlags<NetInfo> NONE => DynamicFlagsUtil.NONE;
+            private static DynamicFlags<NetInfo> NONE => DynamicFlags<NetInfo>.empty;
             public string[] Required = EMPTY, Forbidden = EMPTY;
             public bool ForbidAll = false;
             public byte MinMatch = 0, MaxMatch = 7;
@@ -212,7 +212,7 @@ namespace AdaptiveRoads.Manager {
         public abstract class TagBase : ISerializable {
             public TagBase(string[] tags) {
                 Tags = tags ?? DynamicFlagsUtil.EMPTY_TAGS;
-                Flags = DynamicFlagsUtil.NONE;
+                Flags = DynamicFlags<NetInfo>.empty;
                 Recalculate();
             }
 
@@ -220,7 +220,7 @@ namespace AdaptiveRoads.Manager {
 
             [NonSerialized]
             [XmlIgnore]
-            public DynamicFlags<NetInfo> Flags = DynamicFlagsUtil.NONE;
+            public DynamicFlags<NetInfo> Flags = DynamicFlags<NetInfo>.empty;
 
             private string[] Tags = DynamicFlagsUtil.EMPTY_TAGS;
 
@@ -229,7 +229,7 @@ namespace AdaptiveRoads.Manager {
                 Source.RegisterTags(Tags);
                 Flags = Source.GetFlags(Tags);
                 if (Flags.IsEmpty)
-                    Flags = DynamicFlagsUtil.NONE; // simplify.
+                    Flags = DynamicFlags<NetInfo>.empty; // simplify.
             }
 
             public virtual bool Check(DynamicFlags<NetInfo> flags) => Flags.IsAnyFlagSet(flags);
