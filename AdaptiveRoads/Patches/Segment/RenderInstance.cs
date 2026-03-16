@@ -6,39 +6,6 @@ namespace AdaptiveRoads.Patches.Segment {
     using System.Collections.Generic;
     using System.Reflection;
 
-    [InGamePatch]
-    [HarmonyPatch]
-    public static class RenderInstance {
-        // private void NetSegment.RenderInstance(RenderManager.CameraInfo cameraInfo, ushort segmentID, int layerMask, NetInfo info, ref RenderManager.Instance data)
-        public static MethodBase TargetMethod() {
-            return typeof(NetSegment).GetMethod(
-                "RenderInstance",
-                BindingFlags.NonPublic | BindingFlags.Instance,
-                null,
-                new Type[]
-                {
-                    typeof(RenderManager.CameraInfo),
-                    typeof(ushort),
-                    typeof(int),
-                    typeof(NetInfo),
-                    typeof(RenderManager.Instance).MakeByRefType()
-                },
-                null
-            );
-        }
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase original) {
-            try {
-                var codes = TranspilerUtils.ToCodeList(instructions);
-                CheckSegmentFlagsCommons.PatchCheckFlags(codes, original);
-                Log.Info($"{ReflectionHelpers.ThisMethod} patched {original} successfully!");
-                return codes;
-            } catch(Exception e) {
-                Log.Error(e.ToString());
-                throw e;
-            }
-        }
-    } // end class
-
     [HarmonyPatch()]
     public static class RenderInstanceOverlayPatch {
         // private void NetSegment.RenderInstance(RenderManager.CameraInfo cameraInfo, ushort segmentID, int layerMask, NetInfo info, ref RenderManager.Instance data)
@@ -53,8 +20,8 @@ namespace AdaptiveRoads.Patches.Segment {
                 return codes;
             } catch(Exception e) {
                 Log.Error(e.ToString());
-                throw e;
+                throw;
             }
         }
-    } // end class
-} // end name space
+    }//end class
+}//end namespace

@@ -11,12 +11,10 @@ namespace AdaptiveRoads.Patches.Lane {
 
     internal static class SeedIndexCommons {
         public static void Patch(List<CodeInstruction> codes, MethodBase method) {
-            MethodBase constructor = AccessTools.Constructor(
-                typeof(Randomizer),
-                new[] { typeof(int) } )
-                ?? throw new NullReferenceException("NewRandomizer");
+            MethodBase constructor = typeof(Randomizer).GetConstructor(new[] { typeof(int) })
+                ?? throw new Exception("Randomizer constructor not found");
             MethodInfo mGetSeed = typeof(SeedIndexCommons).GetMethod(nameof(GetSeed), throwOnError: true);
-            MethodInfo NewRandomizer = (MethodInfo)constructor;
+            
             /*int iLdProp = codes.Search(_c => _c.IsLdLoc(typeof(NetLaneProps.Prop), method));
             for (int occurance = 1; occurance<=2; occurance++) {
                 int iNewRandomizer = codes.Search(_c => _c.Calls(NewRandomizer), count: occurance);
@@ -34,7 +32,9 @@ namespace AdaptiveRoads.Patches.Lane {
 
             // Loop backwards (2 then 1) so indices don't shift
             for (int occurance = 2; occurance >= 1; occurance--) {
-                int iNewRandomizer = codes.Search(_c => _c.Calls((MethodInfo)constructor), count: occurance);
+                int iNewRandomizer = codes.Search(_c => 
+                    _c.opcode == OpCodes.Call && _c.operand as ConstructorInfo == constructor, 
+                    count: occurance);
 
                 if (iNewRandomizer != -1) {
                     codes.InsertInstructions(iNewRandomizer, new[] {

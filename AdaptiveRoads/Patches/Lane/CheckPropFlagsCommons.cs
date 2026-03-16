@@ -110,8 +110,8 @@ namespace AdaptiveRoads.Patches.Lane {
 
         // returns the position of First DrawMesh after index.
         public static void PatchCheckFlags(List<CodeInstruction> codes, MethodBase method, ILGenerator il) {
-            var index = SearchInstruction(codes, new CodeInstruction(OpCodes.Callvirt, mCheckFlags), 0, counter: 1);
-            Assertion.Assert(index != 0, "index!=0");
+            var index = codes.Search(c => c.Calls(mCheckFlags));
+            Assertion.Assert(index != -1, "index!=-1");
 
             CodeInstruction LDLoc_prop = Build_LDLoc_PropInfo_FromSTLoc(codes, index);
             CodeInstruction LDArg_laneInfo = GetLDArg(method, "laneInfo");
@@ -140,14 +140,12 @@ namespace AdaptiveRoads.Patches.Lane {
             ?? throw new Exception("fProps is null");
 
         public static CodeInstruction Build_LDLoc_PropInfo_FromSTLoc(List<CodeInstruction> codes, int index, int counter = 1, int dir = -1) {
-            /* IL_008f: ldloc.0      // laneProps
-             * IL_0090: ldfld        class NetLaneProps/Prop[] NetLaneProps::m_props <- find this
-             * IL_0095: ldloc.s      index1
-             * IL_0097: ldelem.ref
-             * IL_0098: stloc.s      prop  <- seek to this -- build ldloc from this */
-            index = SearchInstruction(codes, new CodeInstruction(OpCodes.Ldfld, fProps), index, counter: counter, dir: dir);
-            index = SearchGeneric(codes, i => codes[i].IsStloc(), index, counter: 1, dir: 1);
-            return codes[index].BuildLdLocFromStLoc();
+            // Find Ldfld NetLaneProps::m_props
+            int iLDFld = codes.Search(c => c.opcode == OpCodes.Ldfld && c.operand == fProps, startIndex: index, count: dir * counter);
+            // find the next store local
+            int iStLoc = codes.Search(c => c.opcode == OpCodes.Stloc_S || c.opcode == OpCodes.Stloc, startIndex: iLDFld, count: 1);
+            
+            return codes[iStLoc].BuildLdLocFromStLoc();
         }
     }
 }

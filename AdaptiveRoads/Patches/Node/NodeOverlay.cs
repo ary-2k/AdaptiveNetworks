@@ -85,7 +85,7 @@ namespace AdaptiveRoads.Patches.Node {
 
             int iCheckFlags = codes.Search(_c => _c.Calls(mCheckFlags));
             int iLdaTurnAround = codes.Search(_c =>
-                _c.IsLdLocA(typeof(bool), out int throwaway),
+                _c.IsLdLocA(typeof(bool), method),
                 startIndex: iCheckFlags, count: -1);
             CodeInstruction loadRefTurnAround = codes[iLdaTurnAround].Clone();
 

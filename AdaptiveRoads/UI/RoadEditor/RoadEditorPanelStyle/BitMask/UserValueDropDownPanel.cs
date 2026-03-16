@@ -114,8 +114,8 @@ namespace AdaptiveRoads.UI.RoadEditor.Bitmask {
 
         public void OnDestroy() {
             Log.Called();
-            NetInfoExtionsion.Net.OnCustomFlagRenamed += Refresh;
-            ReflectionHelpers.SetAllDeclaredFieldsToNull(this);
+            NetInfoExtionsion.Net.OnCustomFlagRenamed -= Refresh;
+            base.OnDestroy();
         }
 
         internal static UserValueDropDownPanel Add(

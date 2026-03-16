@@ -12,12 +12,13 @@ namespace AdaptiveRoads.Patches.Segment {
 
     public static class CheckSegmentFlagsCommons {
         static NetworkExtensionManager man_ => NetworkExtensionManager.Instance;
-        public static bool CheckFlags(NetInfo.Segment segmentInfo, ushort segmentID, ref bool turnAround) {
+        public static bool CheckFlags(NetInfo.Segment segmentInfo, ref NetSegment netSegment, ref bool turnAround) {
             var segmentInfoExt = segmentInfo?.GetMetaData();
             if (segmentInfoExt == null) return true; // bypass
 
+            ushort segmentID = netSegment.GetID();
+
             ref NetSegmentExt netSegmentExt = ref man_.SegmentBuffer[segmentID];
-            ref NetSegment netSegment = ref segmentID.ToSegment();
             ref NetNode netNodeStart = ref netSegment.m_startNode.ToNode();
             ref NetNode netNodeEnd = ref netSegment.m_endNode.ToNode();
             ref NetNodeExt netNodeExtStart = ref man_.NodeBuffer[netSegment.m_startNode];
@@ -87,7 +88,7 @@ namespace AdaptiveRoads.Patches.Segment {
             CodeInstruction LDLoc_SegmentInfo = GetPrevLdLocSegmentInfo(method, codes, index);
             CodeInstruction LDLoca_turnAround = new CodeInstruction(codes[index - 1]);
             Assertion.Assert(LDLoca_turnAround.opcode == OpCodes.Ldloca_S);
-            CodeInstruction LDArg_SegmenteID = TranspilerUtils.GetLDArg(method, "segmentID");
+            CodeInstruction LDArg_SegmenteID = new CodeInstruction(OpCodes.Ldarg_0);
 
             { // insert our checkflags after base checkflags
                 var newInstructions = new[]{
@@ -104,7 +105,7 @@ namespace AdaptiveRoads.Patches.Segment {
         static FieldInfo fSegments => typeof(NetInfo).GetField("m_segments") ?? throw new Exception("fSegments is null");
 
         public static CodeInstruction GetPrevLdLocSegmentInfo(MethodBase method, List<CodeInstruction> codes, int index) {
-            index = codes.Search(c => c.IsLdLoc(typeof(NetInfo.Segment), method), index, count: -1);
+            index = codes.Search(c => c.IsLdLoc(typeof(NetInfo.Segment), method), startIndex: index, count: -1);
             return codes[index].Clone(); // duplicated without lables and blocks
         }
 

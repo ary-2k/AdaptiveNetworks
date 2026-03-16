@@ -43,8 +43,8 @@ namespace AdaptiveRoads.Patches.Node.AntiFlickering {
                 //Patch(codes, occuranceMatrix0: 6, original); // End lod
                 //Patch(codes, occuranceMatrix0: 7, original); // Bend
                 //Patch(codes, occuranceMatrix0: 8, original); // Bend lod
-                Patch(codes, occuranceMatrix0: 9, original); // Bend DC
-                Patch(codes, occuranceMatrix0: 10, original); // Bend DC lod
+                //Patch(codes, occuranceMatrix0: 9, original); // Bend DC
+                //Patch(codes, occuranceMatrix0: 10, original); // Bend DC lod
 
                 Log.Info($"{ReflectionHelpers.ThisMethod} patched {original} successfully!");
                 return codes;

@@ -51,7 +51,6 @@ namespace AdaptiveRoads.UI.RoadEditor.Bitmask {
 
 
         public override void OnDestroy() {
-            ReflectionHelpers.SetAllDeclaredFieldsToNull(this);
             base.OnDestroy();
         }
 
