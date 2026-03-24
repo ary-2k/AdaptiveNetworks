@@ -238,9 +238,9 @@ namespace AdaptiveRoads.Manager {
                 if(!SegmentID.ToSegment().IsValid())
                     return;
                 //Log.DebugWait($"RenderTrackInstance() called for {this}");
-                if(NetInfoExt == null || !Segment.Info.CheckNetLayers(layerMask))
+                if(NetInfoExt == null || !VanillaSegment.Info.CheckNetLayers(layerMask))
                     return;
-                if(!cameraInfo.Intersect(Segment.m_bounds))
+                if(!cameraInfo.Intersect(VanillaSegment.m_bounds))
                     return;
                 Assertion.NotNull(LaneIDs, "LaneIDs");
                 for(int laneIndex = 0; laneIndex < LaneIDs.Length; ++laneIndex) {
@@ -275,13 +275,13 @@ namespace AdaptiveRoads.Manager {
         public void PopulateGroupData(int groupX, int groupZ, int layer, ref int vertexIndex, ref int triangleIndex, Vector3 groupPosition, RenderGroup.MeshData data, ref Vector3 min, ref Vector3 max, ref float maxRenderDistance, ref float maxInstanceDistance) {
             if(NetInfoExt == null)
                 return;
-            if(!Segment.Info.CheckNetLayers(1 << layer))
+            if(!VanillaSegment.Info.CheckNetLayers(1 << layer))
                 return;
             if(NetInfoExt.TrackLaneCount == 0)
                 return;
             if(Log.VERBOSE) Log.Called(SegmentID);
-            min = Vector3.Min(min, Segment.m_bounds.min);
-            max = Vector3.Max(max, Segment.m_bounds.max);
+            min = Vector3.Min(min, VanillaSegment.m_bounds.min);
+            max = Vector3.Max(max, VanillaSegment.m_bounds.max);
             maxRenderDistance = Mathf.Max(maxRenderDistance, 30000f);
             maxInstanceDistance = Mathf.Max(maxInstanceDistance, 1000f);
             for(int laneIndex = 0; laneIndex < LaneIDs.Length; ++laneIndex) {
