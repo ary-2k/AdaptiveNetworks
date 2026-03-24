@@ -13,7 +13,7 @@ namespace AdaptiveRoads.Patches.Lane {
         public static void Patch(List<CodeInstruction> codes, MethodBase method) {
             MethodBase constructor = AccessTools.Constructor(
                 typeof(Randomizer),
-                new[] { typeof(int) } )
+                new[] { typeof(int) })
                 ?? throw new NullReferenceException("NewRandomizer");
             MethodInfo mGetSeed = typeof(SeedIndexCommons).GetMethod(nameof(GetSeed), throwOnError: true);
             MethodInfo NewRandomizer = (MethodInfo)constructor;
@@ -28,7 +28,20 @@ namespace AdaptiveRoads.Patches.Lane {
                     new CodeInstruction(OpCodes.Call, mGetSpeed),
                     });*/
 
-            // Find the local variable load for Prop
+            // Find randomizer constructor call
+            var matcher = new CodeMatcher(codes);
+            matcher.MatchEndForward([
+                new CodeMatch(OpCodes.Ldloca_S),
+                new CodeMatch(OpCodes.Ldarg_2),
+                new CodeMatch(OpCodes.Ldloc_S),
+                new CodeMatch(OpCodes.Add),
+                new CodeMatch(OpCodes.Call, AccessTools.Constructor(typeof(Randomizer), new Type[]{typeof(int) }))
+                ]);
+            CodeInstruction ldarg2_laneid = new(OpCodes.Ldarg_2);
+            CodeInstruction ldloc_s_prop= new(OpCodes.Ldloc_S, 4);
+            // Get Net
+
+
             int iLdProp = codes.Search(_c => _c.IsLdLoc(typeof(NetLaneProps.Prop), method));
             if (iLdProp == -1) throw new Exception("Could not find NetLaneProps.Prop local load");
 
